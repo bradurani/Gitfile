@@ -24,6 +24,7 @@ func main() {
 	contents := readFile(absPath)
 	repos := parseFile(contents)
 	fmt.Println(repos)
+
 }
 
 func readFile(absPath string) string {
@@ -36,7 +37,6 @@ func parseFile(contents string) []repo {
 	r := []repo{}
 	err := yaml.Unmarshal([]byte(contents), &r)
 	check(err)
-	fmt.Printf("--- t:\n%v\n\n", r)
 	return r
 }
 
