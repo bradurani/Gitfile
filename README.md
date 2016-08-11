@@ -37,15 +37,15 @@ Options are
  - `url` - The Url (https or ssh) of the git repo
  - `path` - The path to install to
  - `branch` - The branch to install
- - `tag` - The tag to install  
+ - `tag` - The tag to install
 
- `tag` and `branch` cannot both be defined for any repo. If neither are defined,
- then branch `master` is installed.
+`tag` and `branch` cannot both be defined for any repo. If neither are defined,
+then branch `master` is installed.
 
 # Options
 
-`gitfile` - Installs from `Gitfile` in the current directory  
-`gitfile -f <path>` - Installs using config file at the specified path. If path is  
+`gitfile` - Installs from `Gitfile` in the current directory
+`gitfile -f <path>` - Installs using config file at the specified path. If path is
                       a dir, it will look for a `Gitfile`
 
 # Contributing
@@ -53,7 +53,12 @@ Options are
 Feel feel free to open issues and pull requests. If you like this repo, spread
 the word!
 
-### potential improvements
+# Installing
+
+Gitfile is written in [Go](https://golang.org/). Package and instructions coming
+soon.
+
+### Potential Improvements
  - `--help` flag
  - `man` pages
  - `commit: ` config option
@@ -62,6 +67,7 @@ the word!
  - `gitfile status` command (show repo status)
  - `gitfile update` command (updates only, does not install new repos)
  - brew, deb, arch, yum etc. packages
+
 
 
 
