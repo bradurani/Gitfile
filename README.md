@@ -48,15 +48,15 @@ then branch `master` is installed.
 `gitfile -f <path>` - Installs using config file at the specified path. If path is
                       a dir, it will look for a `Gitfile`
 
-# Contributing
-
-Feel feel free to open issues and pull requests. If you like this repo, spread
-the word!
-
 # Installing
 
 Gitfile is written in [Go](https://golang.org/). Package and instructions coming
 soon.
+
+# Contributing
+
+Feel feel free to open issues and pull requests. If you like this repo, spread
+the word!
 
 ### Potential Improvements
  - `--help` flag
