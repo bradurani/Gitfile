@@ -44,7 +44,7 @@ then branch `master` is installed.
 
 # Options
 
-`gitfile` - Installs from `Gitfile` in the current directory
+`gitfile` - Installs from `Gitfile` in the current directory  
 `gitfile -f <path>` - Installs using config file at the specified path. If path is
                       a dir, it will look for a `Gitfile`
 
