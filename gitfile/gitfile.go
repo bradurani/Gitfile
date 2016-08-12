@@ -6,8 +6,10 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-
+	"strings"
+	"net/url"
 	"gopkg.in/yaml.v2"
+	// "github.com/bradurani/go-git/git"
 )
 
 type repo struct {
@@ -24,7 +26,51 @@ func main() {
 	contents := readFile(absPath)
 	repos := parseFile(contents)
 	fmt.Println(repos)
+	updateRepos(repos)
+}
 
+func updateRepos(repos []repo) {
+	for _, repo := range repos {
+		updateRepo(repo)
+	}
+}
+
+func updateRepo(repo repo) {
+	path := repo.Path
+	if path == "" {
+		path = "."
+	}
+	fmt.Println("path is ", path)
+	gitDir := parseGitDir(repo.Url)
+	repoExists := repoExists(path, gitDir)
+	fmt.Println("exists: ", repoExists)
+}
+
+func parseGitDir(repoUrl string) (gitDir string) {
+	u, err := url.Parse(repoUrl)
+	check(err)
+	path := strings.TrimLeft(u.Path, "/")
+	segments := strings.Split(path, "/")
+	if len(segments) != 2 {
+		panic("urls must have 2 path segments")
+	}
+	return segments[1]
+}
+
+func repoExists(repoPath string, gitDir string) (exists bool) {
+	err := os.MkdirAll(repoPath, 0777)
+	check(err)
+	gitPath := filepath.Join(repoPath, gitDir, ".git")
+	pathExists, err := pathExists(gitPath)
+	check(err)
+	return pathExists
+}
+
+func pathExists(path string) (bool, error) {
+    _, err := os.Stat(path)
+    if err == nil { return true, nil }
+    if os.IsNotExist(err) { return false, nil }
+    return true, err
 }
 
 func readFile(absPath string) string {
