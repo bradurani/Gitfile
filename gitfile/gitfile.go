@@ -3,13 +3,14 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
-	"net/url"
+
 	"gopkg.in/yaml.v2"
-	// "github.com/bradurani/go-git/git"
 )
 
 type repo struct {
@@ -40,10 +41,30 @@ func updateRepo(repo repo) {
 	if path == "" {
 		path = "."
 	}
-	fmt.Println("path is ", path)
+	fmt.Println("path: ", path)
 	gitDir := parseGitDir(repo.Url)
 	repoExists := repoExists(path, gitDir)
 	fmt.Println("exists: ", repoExists)
+	if repoExists {
+		pullRepo(repo, path)
+	} else {
+		cloneRepo(repo, path)
+	}
+}
+
+func pullRepo(repo repo, path string) {
+
+}
+
+func cloneRepo(repo repo, path string) {
+	args := []string{"clone", repo.Url, repo.Path}
+	runCmd("git", args)
+}
+
+func runCmd(cmd string, args []string) {
+	out, err := exec.Command(cmd, args...).Output()
+	check(err)
+	fmt.Printf("%s", out)
 }
 
 func parseGitDir(repoUrl string) (gitDir string) {
@@ -67,10 +88,14 @@ func repoExists(repoPath string, gitDir string) (exists bool) {
 }
 
 func pathExists(path string) (bool, error) {
-    _, err := os.Stat(path)
-    if err == nil { return true, nil }
-    if os.IsNotExist(err) { return false, nil }
-    return true, err
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return true, err
 }
 
 func readFile(absPath string) string {
