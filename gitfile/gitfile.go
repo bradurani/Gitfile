@@ -58,7 +58,7 @@ func pullRepo(repo repo, path string) {
 
 func cloneRepo(repo repo, path string) {
 	args := []string{"clone", repo.Url, repo.Path}
-	runCmd("git", args)
+	runCmd("/usr/local/bin/git", args)
 }
 
 func runCmd(cmd string, args []string) {
