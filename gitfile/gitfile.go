@@ -56,26 +56,35 @@ func updateRepo(repo repo) {
 	repoDir := parseRepoDir(repo.Url)
 	repoExists := repoExists(repo.Path, repoDir)
 	if repoExists {
-		changeBranch(repo, repoDir)
-		pullRepo(repo, repoDir)
+		fetchRepo(repo, repoDir)
+		checkout(repo, repoDir)
 	} else {
 		cloneRepo(repo, repoDir)
-		changeBranch(repo, repoDir)
+		checkout(repo, repoDir)
 	}
 }
 
-func changeBranch(repo repo, repoDir string){
-	fullPath :=  filepath.Join(repo.Path, repoDir)
+func checkout(repo repo, repoDir string) {
+	fullPath := filepath.Join(repo.Path, repoDir)
 	pwd := getPwd()
 	changeDir(fullPath)
+	if repo.Branch != "" {
+		runGitCmd([]string{"checkout", repo.Branch})
+	} else if repo.Tag != "" {
+		tagArg := fmt.Sprintf("tags/%s", repo.Tag)
+		runGitCmd([]string{"checkout", tagArg})
+	} else if repo.Commit == "" {
+		runGitCmd([]string{"checkout", repo.Commit})
+	}
 	changeDir(pwd)
 }
 
-func pullRepo(repo repo, repoDir string) {
-	fmt.Println("pulling repo", repo)
+func fetchRepo(repo repo, repoDir string) {
+	fullPath := filepath.Join(repo.Path, repoDir)
+	fmt.Println("fetching repo", repo)
 	pwd := getPwd()
-	changeDir(repoDir)
-	args := []string{"pull", "--ff-only"}
+	changeDir(fullPath)
+	args := []string{"fetch"}
 	runGitCmd(args)
 	changeDir(pwd)
 }
@@ -100,7 +109,7 @@ func cloneRepo(repo repo, repoDir string) {
 	runGitCmd(args)
 }
 
-func runGitCmd(args []string){
+func runGitCmd(args []string) {
 	runCmd("git", args)
 }
 
