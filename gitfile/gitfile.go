@@ -75,6 +75,7 @@ func checkout(repo repo, repoDir string) {
 		runGitCmd([]string{"checkout", tagArg})
 	} else if repo.Branch != "" {
 		runGitCmd([]string{"checkout", repo.Branch})
+		runGitCmd([]string{"pull", "--ff-only"})
 	} else {
 		panic("No checkout value")
 	}
