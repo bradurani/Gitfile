@@ -53,27 +53,30 @@ func updateRepos(repos []repo) {
 }
 
 func updateRepo(repo repo) {
-	path := repo.Path
-	if path == "" {
-		path = "."
-	}
-	fmt.Println("path: ", path)
-	gitDir := parseGitDir(repo.Url)
-	repoExists := repoExists(path, gitDir)
-	fmt.Println("exists: ", repoExists)
+	repoDir := parseRepoDir(repo.Url)
+	repoExists := repoExists(repo.Path, repoDir)
 	if repoExists {
-		pullRepo(repo, gitDir)
+		changeBranch(repo, repoDir)
+		pullRepo(repo, repoDir)
 	} else {
-		cloneRepo(repo, path)
+		cloneRepo(repo, repoDir)
+		changeBranch(repo, repoDir)
 	}
 }
 
-func pullRepo(repo repo, gitDir string) {
+func changeBranch(repo repo, repoDir string){
+	fullPath :=  filepath.Join(repo.Path, repoDir)
 	pwd := getPwd()
-	fmt.Println("pwd: ", pwd)
-	changeDir(gitDir)
+	changeDir(fullPath)
+	changeDir(pwd)
+}
+
+func pullRepo(repo repo, repoDir string) {
+	fmt.Println("pulling repo", repo)
+	pwd := getPwd()
+	changeDir(repoDir)
 	args := []string{"pull", "--ff-only"}
-	runCmd("/usr/local/bin/git", args)
+	runGitCmd(args)
 	changeDir(pwd)
 }
 
@@ -88,13 +91,17 @@ func getPwd() string {
 	return pwd
 }
 
-func cloneRepo(repo repo, path string) {
+func cloneRepo(repo repo, repoDir string) {
+	fmt.Println("Cloning repo", repo)
 	args := []string{"clone", repo.Url}
-	fmt.Println("path:", repo.Path)
-	if strings.TrimSpace(repo.Path) != "" {
-		args = append(args, repo.Path)
+	if strings.TrimSpace(repo.Path) != "." {
+		args = append(args, filepath.Join(repo.Path, repoDir))
 	}
-	runCmd("/usr/local/bin/git", args)
+	runGitCmd(args)
+}
+
+func runGitCmd(args []string){
+	runCmd("git", args)
 }
 
 func runCmd(cmd string, args []string) {
@@ -104,7 +111,7 @@ func runCmd(cmd string, args []string) {
 	fmt.Println(out)
 }
 
-func parseGitDir(repoUrl string) (gitDir string) {
+func parseRepoDir(repoUrl string) (gitDir string) {
 	u, err := url.Parse(repoUrl)
 	check(err)
 	path := strings.TrimLeft(u.Path, "/")
@@ -120,7 +127,6 @@ func repoExists(repoPath string, gitDir string) (exists bool) {
 	err := os.MkdirAll(repoPath, 0777)
 	check(err)
 	gitPath := filepath.Join(repoPath, gitDir, ".git")
-	fmt.Println("path exists? ", gitPath)
 	pathExists, err := pathExists(gitPath)
 	check(err)
 	return pathExists
