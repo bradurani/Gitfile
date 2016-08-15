@@ -52,7 +52,7 @@ then branch `master` is installed.
 
 # Installing
 
-If you don't have Go, you must install it from [Go](https://golang.org/).
+If you don't have Go, you must install it from [golang.org](https://golang.org/).
 Then run:
 ```
 go get github.com/bradurani/Gitfile/gitfile
