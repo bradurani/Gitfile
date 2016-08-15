@@ -7,7 +7,7 @@ that only live on [GitHub](https://github.com)
 
 ## Usage
 
-List your packages in a [YAML](http://yaml.org) file called `Gitfile`
+List the repos you want installed in a [YAML](http://yaml.org) file called `Gitfile`
 ```yaml
 # ~/my/source/dir/Gitfile
 
@@ -27,7 +27,7 @@ cd ~/my/source/dir
 gitfile
 ```
 
-And your packages will be installed or updated
+And your repos will be cloned or fetched
 
 # Configuration
 
