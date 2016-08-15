@@ -35,18 +35,20 @@ The `Gitfile` must be in YAML format and the top level element must be an array.
 Options are
 
  - `url` - The Url (https or ssh) of the git repo
- - `path` - The path to install to
+ - `path` - The path to install to (absolute or relative to current dir)
  - `branch` - The branch to install
  - `tag` - The tag to install
+ - `commit` - The commit to install
 
-`tag` and `branch` cannot both be defined for any repo. If neither are defined,
+You can only use one of `tag`, `branch`, and `repo`. If none are defined,
 then branch `master` is installed.
 
 # Options
 
 `gitfile` - Installs from `Gitfile` in the current directory  
-`gitfile -f <path>` - Installs using config file at the specified path. If path is
-                      a dir, it will look for a `Gitfile`
+`gitfile <dir>` - Installs using the `Gitfile` in the specified directory. Repos are
+                  installed relative to the specified directory, not the directory the 
+                  command is run from
 
 # Installing
 
@@ -61,11 +63,9 @@ the word!
 ### Potential Improvements
  - `--help` flag
  - `man` pages
- - `commit: ` config option
  - `post_install: ` config option for running script
  - `post_update: ` config option for running script
  - `gitfile status` command (show repo status)
- - `gitfile update` command (updates only, does not install new repos)
  - brew, deb, arch, yum etc. packages
 
 
