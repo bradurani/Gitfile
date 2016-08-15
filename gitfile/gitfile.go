@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -24,12 +23,13 @@ type repo struct {
 func main() {
 	argsWithProg := os.Args
 	gitfilePath := gitfilePath(argsWithProg)
-	fmt.Println(gitfilePath)
-	contents := readFile(gitfilePath)
+	pwd := getPwd()
+	changeDir(gitfilePath)
+	contents := readFile(filepath.Join(gitfilePath, "Gitfile"))
 	repos := parseFile(contents)
 	addRepoDefaults(repos)
-	fmt.Println(repos)
 	updateRepos(repos)
+	changeDir(pwd)
 }
 
 func addRepoDefaults(repos []repo) {
@@ -68,13 +68,15 @@ func checkout(repo repo, repoDir string) {
 	fullPath := filepath.Join(repo.Path, repoDir)
 	pwd := getPwd()
 	changeDir(fullPath)
-	if repo.Branch != "" {
-		runGitCmd([]string{"checkout", repo.Branch})
+	if repo.Commit != "" {
+		runGitCmd([]string{"checkout", repo.Commit})
 	} else if repo.Tag != "" {
 		tagArg := fmt.Sprintf("tags/%s", repo.Tag)
 		runGitCmd([]string{"checkout", tagArg})
-	} else if repo.Commit == "" {
-		runGitCmd([]string{"checkout", repo.Commit})
+	} else if repo.Branch != "" {
+		runGitCmd([]string{"checkout", repo.Branch})
+	} else {
+		panic("No checkout value")
 	}
 	changeDir(pwd)
 }
@@ -114,10 +116,10 @@ func runGitCmd(args []string) {
 }
 
 func runCmd(cmd string, args []string) {
-	fmt.Println("cmd: ", strings.Join(append([]string{cmd}, args...), " "))
+	fmt.Println(strings.Join(append([]string{cmd}, args...), " "))
 	out, err := exec.Command(cmd, args...).Output()
 	check(err)
-	fmt.Println(out)
+	fmt.Printf("%s", out)
 }
 
 func parseRepoDir(repoUrl string) (gitDir string) {
@@ -128,7 +130,7 @@ func parseRepoDir(repoUrl string) (gitDir string) {
 	if len(segments) != 2 {
 		panic("urls must have 2 path segments")
 	}
-	lastSegment := strings.TrimRight(segments[1], ".git")
+	lastSegment := strings.TrimSuffix(segments[1], ".git")
 	return lastSegment
 }
 
@@ -170,8 +172,8 @@ func gitfilePath(argsWithProg []string) string {
 	if len(argsWithProg) > 1 {
 		dirArg = argsWithProg[1]
 	}
-	currentDir := currentDir()
-	absPath := path.Join(currentDir, dirArg, "Gitfile")
+	absPath, err := filepath.Abs(dirArg)
+	check(err)
 	return absPath
 }
 
@@ -183,7 +185,6 @@ func currentDir() string {
 
 func check(e error) {
 	if e != nil {
-		fmt.Println(e)
 		panic(e)
 	}
 }
