@@ -52,9 +52,12 @@ then branch `master` is installed.
 
 # Installing
 
-Gitfile is written in [Go](https://golang.org/). Package and instructions coming
-soon.
-
+If you don't have Go, you must install it from [Go](https://golang.org/).
+Then run:
+```
+go get github.com/bradurani/Gitfile/gitfile
+go install github.com/bradurani/Gitfile/gitfile
+```
 # Contributing
 
 Feel feel free to open issues and pull requests. If you like this repo, spread
