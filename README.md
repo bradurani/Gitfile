@@ -17,7 +17,7 @@ List the repos you want installed in a [YAML](http://yaml.org) file called `Gitf
 - url: https://github.com/olivierverdier/zsh-git-prompt.git
   tag: v0.4
 - url: https://github.com/tmux-plugins/tmux-battery.git
-  path: tmux-plugins/
+  path: ~/.tmux-plugins/
   branch: master
 ```
 
