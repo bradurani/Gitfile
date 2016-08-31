@@ -117,9 +117,9 @@ func runGitCmd(args []string) {
 }
 
 func runCmd(cmd string, args []string) {
-	fmt.Println(strings.Join(append([]string{cmd}, args...), " "))
-	fmt.Println("UGHG")
-	out, err := exec.Command("sh", "-c", strings.Join(append([]string{cmd}, args...), " ")).Output()
+	fullCmd := strings.Join(append([]string{cmd}, args...), " ")
+	fmt.Println(fullCmd)
+	out, err := exec.Command("sh", "-c", "'" + fullCmd + "'").Output()
 	check(err)
 	fmt.Printf("%s", out)
 }
