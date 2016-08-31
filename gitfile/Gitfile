@@ -1,9 +1,0 @@
-- url: git://github.com/bradurani/bradrc.git
-# - url: http://github.com/thoughtbot/dotfiles.git
-#   path: foo/
-# - url: git://github.com/olivierverdier/zsh-git-prompt.git
-#   tag: v0.4
-#   path: ../
-# - url: https://github.com/tmux-plugins/tmux-battery.git
-#   path: stuff/
-#   branch: master
