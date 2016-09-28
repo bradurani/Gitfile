@@ -43,7 +43,13 @@ func addRepoDefaults(repos []repo) {
 		if repos[i].Branch == "" && repos[i].Tag == "" && repos[i].Commit == "" {
 			repos[i].Branch = "master"
 		}
+		repos[i].Path = expandPath(repos[i].Path)
 	}
+}
+
+func expandPath(path string) string {
+	newPath := execCmd("printf " + path)
+	return newPath
 }
 
 func updateRepos(repos []repo) {
@@ -116,11 +122,18 @@ func runGitCmd(args []string) {
 	runCmd("git", args)
 }
 
-func runCmd(cmd string, args []string) {
-	fmt.Println(strings.Join(append([]string{cmd}, args...), " "))
-	out, err := exec.Command(cmd, args...).Output()
+func runCmd(cmd string, args []string) string {
+	fullCmd := strings.Join(append([]string{cmd}, args...), " ")
+	fmt.Println(fullCmd)
+	out := execCmd(fullCmd)
+	fmt.Printf("%s\n", out)
+	return out
+}
+
+func execCmd(fullCmd string) string {
+	out, err := exec.Command("bash", "-c", fullCmd).Output()
 	check(err)
-	fmt.Printf("%s", out)
+  return fmt.Sprintf("%s", out)
 }
 
 func parseRepoDir(repoUrl string) (gitDir string) {
